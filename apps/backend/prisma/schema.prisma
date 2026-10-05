@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  proxies Proxy[]
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model Proxy {
+  id          String      @id @default(uuid())
+  name        String
+  targetUrl   String
+  protocol    Protocol    @default(HTTP)
+  status      ProxyStatus @default(ONLINE)
+  userId      String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs        ProxyLog[]
+}
+
+enum Protocol {
+  HTTP
+  HTTPS
+  SOCKS5
+}
+
+enum ProxyStatus {
+  ONLINE
+  OFFLINE
+  PAUSED
+}
+
+model ProxyLog {
+  id         String   @id @default(uuid())
+  method     String
+  url        String
+  statusCode Int
+  durationMs Int
+  createdAt  DateTime @default(now())
+
+  proxyId    String
+  proxy      Proxy    @relation(fields: [proxyId], references: [id], onDelete: Cascade)
+}

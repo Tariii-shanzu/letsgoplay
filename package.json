@@ -1,0 +1,20 @@
+{
+  "name": "letsgoplay",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/backend",
+    "apps/frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=apps/backend\" \"npm run dev --workspace=apps/frontend\"",
+    "build": "npm run build --workspace=apps/backend && npm run build --workspace=apps/frontend",
+    "lint": "npm run lint --workspace=apps/backend && npm run lint --workspace=apps/frontend",
+    "test": "npm run test --workspace=apps/backend && npm run test --workspace=apps/frontend",
+    "db:generate": "npm run db:generate --workspace=apps/backend",
+    "db:migrate": "npm run db:migrate --workspace=apps/backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
